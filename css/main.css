@@ -1,11 +1,24 @@
+* {
+        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+h1 {
+    font-size: 50px;
+    margin: 25px 100px 20px 100px;
+    padding: 5px 10px;
+    border-bottom: solid 3px;
+}
+
 body {
     padding: 0px;
-    margin: 0px;
+    margin: 0px auto;
     background-color:silver;
+    width: 650px;
+    text-align: center;
 }
 
 .container {
-    margin: 100px;
+    margin: 10px auto 10px auto;
     padding: 5px;
     border: grey solid 3px;
     box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
@@ -17,10 +30,72 @@ body {
     display: inline-block;
     box-sizing: border-box;
     border-style: solid;
-    border-color: rgba(128, 128, 128,0.2);
     user-select: none;
 }
 
-.container>.grid:hover {
+.nohover {
+    border-color: rgba(128, 128, 128, 0.2);
+}
+
+.hovering {
     border-color: rgb(0, 0, 0);
+}
+
+.setting {
+    margin: 25px;
+    border-top: solid 3px;
+    padding: 15px 0px;
+}
+
+.canvas-btn {
+    background-color: dodgerblue;
+    color:whitesmoke;
+    border: solid whitesmoke 3px;
+    padding: 5px 16px;
+    font-size: 20px;
+    border-radius: 12px;
+    transition: all 0.1s ease-in-out;
+    margin: 10px 3px;
+}
+
+.canvas-btn:hover {
+    background-color: grey;
+    transform: scale(1.2);
+}
+
+.color-picker {
+    height: 100px;
+    width: 100px;
+    border-radius: 15px;
+    margin: 5px;
+    display: inline;
+}
+
+.brush-setting {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.sliders {
+    margin-left: 10px;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border-radius: 10px;
+}
+
+.tool-setting {
+    width: 100px;
+    border-right: solid 1.5px;
+    padding: 5px;
+}
+
+.canvas-setting {
+    align-self: baseline;
+    margin-left: 0px;
+}
+
+.canvas-buttons {
+    display: flex;
 }

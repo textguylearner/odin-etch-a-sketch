@@ -1,25 +1,47 @@
-const containerElement = document.querySelector(".container");
-
-let dimensionCount = 16;
-let gridSize = 25;
-let paletteSize = dimensionCount * gridSize;
-containerElement.style.width = paletteSize + 'px';
-containerElement.style.height = paletteSize + 'px';
-
 let mouseDown = false
 document.body.onmousedown = () => (mouseDown = true)
 document.body.onmouseup = () => (mouseDown = false)
 
 let grid = [];
+let lastHover = [];
 
-let brushSize = 0;
-let brushOpacity = 1;
+const opcaitySlider = document.querySelector('.brush-opacity');
+const opcaityText = document.querySelector('.brush-opacity-text');
+const sizeSlider = document.querySelector('.brush-size');
+const sizeText = document.querySelector('.brush-size-text');
+
+let usingEraser = false;
+
+opcaityText.textContent = 'Brush Opacity: ' + opcaitySlider.value / 10;
+sizeText.textContent = 'Brush Size: ' + sizeSlider.value;
+
+let brushSize = sizeSlider.value - 1;
+let brushOpacity = opcaitySlider.value / 10;
+
+
+sizeSlider.oninput = function() {
+    brushSize = sizeSlider.value - 1;
+    sizeText.textContent = 'Brush Size: ' + this.value;
+}
+
+opcaitySlider.oninput = function() {
+    brushOpacity = opcaitySlider.value / 10;
+    opcaityText.textContent = 'Brush Opacity: ' + (this.value / 10);
+}
 
 function drawColor(e) {
-    if(!mouseDown) return;
+
+    lastHover.forEach(e => {
+        e.classList.remove('hovering');
+        e.classList.add('nohover'); 
+    });
+
+    lastHover = [];
+
     if(brushSize === 0)
     {
-        paintGrid(e.target);
+        lastHover.push(e.target);
+        if(mouseDown) paintGrid(e.target);
     }
     else
     {
@@ -31,19 +53,34 @@ function drawColor(e) {
         {
             for(let xx = x - brushSize; xx <= x + brushSize; xx++)
             {
-                const element = containerElement.querySelector(`[data-pos="${xx},${yy}"]`);
-                if(element) paintGrid(element);
+                const element = document.querySelector(`[data-pos="${xx},${yy}"]`);
+                if(element) 
+                {
+                    lastHover.push(element);
+                    if(mouseDown) paintGrid(element);
+                }
             }
         }
     }
+
+    lastHover.forEach(e => {
+        e.classList.remove('nohover');
+        e.classList.add('hovering'); 
+    });
 }
 
 function paintGrid(e) {
     const currentColor = e.style.backgroundColor;
+    if(usingEraser)
+    {
+        e.style.backgroundColor = '';
+        return;
+    }
     if(currentColor === 'rgb(0, 0, 0)') return;
     if(currentColor === '')
     {
-        e.style.backgroundColor = `rgba(0,0,0,${brushOpacity})`;
+        e.style.backgroundColor = document.querySelector('.color-picker').value;
+        //e.style.backgroundColor = `rgba(0,0,0,${brushOpacity})`;
     }
     else
     {
@@ -53,35 +90,53 @@ function paintGrid(e) {
     }
 }
 
-for(let y = 0; y < dimensionCount; y++) {
-    let row = [];
-    for(let x = 0; x < dimensionCount; x++)
-    {
-        const gridDiv = document.createElement('div');
-        gridDiv.classList.add('grid');
+function generateGrid(size) {
+    if(document.querySelector(".container")) document.querySelector(".container").remove();
+    let newContainer = document.createElement("div");
+    newContainer.classList.add('container');
+    document.querySelector(".canvas").append(newContainer);
 
-        const borderWidth = 1;
-        const outerBorderWidth = borderWidth * 2;
-        topBorder = (y === 0) ? outerBorderWidth : borderWidth;
-        rightBorder = (x === dimensionCount - 1) ? outerBorderWidth : borderWidth;
-        bottomBorder = (y === dimensionCount - 1) ? outerBorderWidth : borderWidth;
-        leftBorder = (x === 0) ? outerBorderWidth : borderWidth;
+    grid = [];
 
-        gridDiv.style = 
-        `width:${gridSize}px; 
-        height:${gridSize}px;
-        border-top-width: ${topBorder}px;
-        border-right-width: ${rightBorder}px;
-        border-bottom-width: ${bottomBorder}px;
-        border-left-width: ${leftBorder}px;`;
+    let dimensionCount = size;
+    let gridSize = 400 / dimensionCount;
+    let paletteSize = 400;
+    newContainer.style.width = paletteSize + 'px';
+    newContainer.style.height = paletteSize + 'px';
 
-        gridDiv.addEventListener("mousedown", drawColor);
-        gridDiv.addEventListener("mouseover", drawColor);
+    for(let y = 0; y < dimensionCount; y++) {
+        let row = [];
+        for(let x = 0; x < dimensionCount; x++)
+        {
+            const gridDiv = document.createElement('div');
+            gridDiv.classList.add('grid');
+            gridDiv.classList.add('nohover');
 
-        gridDiv.setAttribute('data-pos', `${x},${y}`);
-        row.push(gridDiv);
+            const borderWidth = 1;
+            const outerBorderWidth = borderWidth * 2;
+            topBorder = (y === 0) ? outerBorderWidth : borderWidth;
+            rightBorder = (x === dimensionCount - 1) ? outerBorderWidth : borderWidth;
+            bottomBorder = (y === dimensionCount - 1) ? outerBorderWidth : borderWidth;
+            leftBorder = (x === 0) ? outerBorderWidth : borderWidth;
 
-        containerElement.appendChild(gridDiv);
+            gridDiv.style = 
+            `width:${gridSize}px; 
+            height:${gridSize}px;
+            border-top-width: ${topBorder}px;
+            border-right-width: ${rightBorder}px;
+            border-bottom-width: ${bottomBorder}px;
+            border-left-width: ${leftBorder}px;`;
+
+            gridDiv.addEventListener("mousedown", drawColor);
+            gridDiv.addEventListener("mouseenter", drawColor);
+
+            gridDiv.setAttribute('data-pos', `${x},${y}`);
+            row.push(gridDiv);
+
+            newContainer.appendChild(gridDiv);
+        }
+        grid.push(row);
     }
-    grid.push(row);
 }
+
+generateGrid(16);

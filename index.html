@@ -6,9 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/main.css">
     <script src="./js/main.js" defer></script>
-    <title>Document</title>
+    <title>Etch-A-Sketch</title>
 </head>
 <body>
-    <div class="container"></div>
+    <h1>Etch-A-Sketch</h1>
+    <div class="canvas"></div>
+    <div class="setting">
+        <div class="brush-setting">
+            <input class='color-picker' type="color">
+            <div class="sliders">
+                <div class='brush-opacity-text'>brush opacity: 10</div>
+                <input class='brush-opacity' type="range" min="1" max="10" value="10" class="slider">
+                <div class='brush-size-text'>brush size: 1</div>
+                <input class='brush-size' type="range" min="1" max="10" value="1" class="slider">
+            </div>
+            <div class="tool-setting">
+                <button onclick="usingEraser = false" class="canvas-btn">Brush</button>
+                <button onclick="usingEraser = true" class="canvas-btn">Eraser</button>
+            </div>
+            <div class="canvas-setting"> 
+                Canvas Size
+                <div class="'canvas-buttons">
+                    <button onclick="generateGrid(16)" class="canvas-btn canvas-16">16</button>
+                    <button onclick="generateGrid(32)" class="canvas-btn canvas-32">32</button>
+                    <button onclick="generateGrid(64)" class="canvas-btn canvas-64">64</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
