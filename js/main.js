@@ -5,28 +5,19 @@ document.body.onmouseup = () => (mouseDown = false)
 let grid = [];
 let lastHover = [];
 
-const opcaitySlider = document.querySelector('.brush-opacity');
-const opcaityText = document.querySelector('.brush-opacity-text');
 const sizeSlider = document.querySelector('.brush-size');
 const sizeText = document.querySelector('.brush-size-text');
 
 let usingEraser = false;
 
-opcaityText.textContent = 'Brush Opacity: ' + opcaitySlider.value / 10;
 sizeText.textContent = 'Brush Size: ' + sizeSlider.value;
 
 let brushSize = sizeSlider.value - 1;
-let brushOpacity = opcaitySlider.value / 10;
 
 
 sizeSlider.oninput = function() {
     brushSize = sizeSlider.value - 1;
     sizeText.textContent = 'Brush Size: ' + this.value;
-}
-
-opcaitySlider.oninput = function() {
-    brushOpacity = opcaitySlider.value / 10;
-    opcaityText.textContent = 'Brush Opacity: ' + (this.value / 10);
 }
 
 function drawColor(e) {
@@ -76,18 +67,7 @@ function paintGrid(e) {
         e.style.backgroundColor = '';
         return;
     }
-    if(currentColor === 'rgb(0, 0, 0)') return;
-    if(currentColor === '')
-    {
-        e.style.backgroundColor = document.querySelector('.color-picker').value;
-        //e.style.backgroundColor = `rgba(0,0,0,${brushOpacity})`;
-    }
-    else
-    {
-        let opacity = Number(currentColor.split(',')[3].split(')')[0]) + brushOpacity;
-        if(opacity > 1) opacity = 1;
-        e.style.backgroundColor = `rgba(0,0,0,${opacity}`;
-    }
+    e.style.backgroundColor = document.querySelector('.color-picker').value;
 }
 
 function generateGrid(size) {
